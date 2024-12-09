@@ -33,6 +33,7 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 public class JsonManager : MonoBehaviour
 {
     Food foodInfo;
+    public bool done = false;
     // Start is called before the first frame update
     void Awake()
     {
@@ -49,6 +50,7 @@ public class JsonManager : MonoBehaviour
             // Optionnel : Convertir le JSON en un objet C#
             foodInfo = JsonUtility.FromJson<Food>(json);
             Debug.Log($"JSON chargé");
+            done = true;
             return;
         }
         Debug.Log($"Error JSON non chargé");

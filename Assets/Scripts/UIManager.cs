@@ -58,6 +58,10 @@ public class UIManager : MonoBehaviour
 
     public void SetRecipe(Recipe recette){
         RecipeName.text = recette.name;
+        foreach(GameObject ingredientText in ingredientsTexts){
+            Destroy(ingredientText);
+        }
+        ingredientsTexts.Clear();
         foreach(IngredientInRecipe ingredient in recette.ingredients){
             GameObject newIngredientInfo = Instantiate(IngredientInfo, panel.transform);
             for(int i = 0; i < newIngredientInfo.transform.childCount; i++){

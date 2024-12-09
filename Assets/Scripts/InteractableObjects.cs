@@ -11,7 +11,8 @@ public class InteractableObjects : MonoBehaviour
         Pot,
         Cut,
         Plate,
-        Mirror
+        Mirror,
+        RecipeCanvas,
     }
     [SerializeField] private string itemName;
     [SerializeField] private Type itemType;
@@ -31,6 +32,7 @@ public class InteractableObjects : MonoBehaviour
     private IngredientManager preparingItemManager;
 
     private RecipeManager recipeManager;
+    private int actualRecipe = 0;
 
 
     void Awake(){
@@ -42,7 +44,7 @@ public class InteractableObjects : MonoBehaviour
         outline.OutlineMode = Outline.Mode.OutlineAll;
         outline.OutlineColor = Color.blue;
         outline.OutlineWidth = 0f;
-        SetInteractText();
+        SetInteractText();        
     }
 
     public string GetName(){
@@ -93,7 +95,7 @@ public class InteractableObjects : MonoBehaviour
             if(holdingItem == null){return false;}
             IngredientManager ingredientManager = holdingItem.GetComponent<IngredientManager>();
             return recipeManager.CanAddThisIngrediant(ingredientManager);
-        }else if(itemType == Type.Mirror){
+        }else if(itemType == Type.Mirror || itemType == Type.RecipeCanvas){
             return true;
         }
         return false;
@@ -128,7 +130,18 @@ public class InteractableObjects : MonoBehaviour
             case Type.Mirror:
                 Emote();
                 break;
+            case Type.RecipeCanvas:
+                NextRecipe();
+                break;
         }
+    }
+
+    private void NextRecipe(){
+        actualRecipe ++;
+        JsonManager jsonManager = FindObjectOfType<JsonManager>();
+        if(actualRecipe > jsonManager.GetFoodInfo().recipes.Count - 1) actualRecipe = 0;
+        UIManager uIManager = FindObjectOfType<UIManager>();
+        uIManager.SetRecipe(jsonManager.GetFoodInfo().recipes[actualRecipe]);
     }
 
     private void GiveItem(){
@@ -137,7 +150,6 @@ public class InteractableObjects : MonoBehaviour
         SetInfos();
         IngredientManager ingredientManager = clone.AddComponent<IngredientManager>();
         ingredientManager.SetAttributes(itemName, canBeCut, canBeCook,mat);
-        Debug.Log($"lol{mat.name}");   
         AudioSource audio = GetComponent<AudioSource>();
         audio.Play();
         playerController.HoldItem(clone);
@@ -224,7 +236,7 @@ public class InteractableObjects : MonoBehaviour
     }
 
     void SetLoadedItem(){
-        if(itemType == Type.Bin || itemType == Type.Mirror){return;}
+        if(itemType == Type.Bin || itemType == Type.Mirror || itemType == Type.RecipeCanvas){return;}
         if(itemType == Type.Plate){recipeManager = GetComponent<RecipeManager>(); return;}
         loader.GetGameObject(itemName, (addressableOject) => {
             if(addressableOject != null){
@@ -242,6 +254,9 @@ public class InteractableObjects : MonoBehaviour
                 break;
             case Type.Mirror:
                 interactionText = "Emote" ;
+                break;
+            case Type.RecipeCanvas:
+                interactionText = "Next Recipe" ;
                 break;
             case Type.Bin:
             if(playerHolding != null){

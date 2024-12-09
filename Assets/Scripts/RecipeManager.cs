@@ -8,7 +8,7 @@ public class RecipeManager : MonoBehaviour
 {
     [SerializeField] private Canvas canvas;
     UIManager uIManager;
-    private Recipe recipe;
+    public Recipe recipe;
     List<GameObject> ingredientInPlate = new List<GameObject>();
     AddressableLoader loader;
     GameObject recipeGameObject;
@@ -16,19 +16,20 @@ public class RecipeManager : MonoBehaviour
     JsonManager jsonManager;
     RabbitManager rabbitManager;
 
-    void Awake(){
+    async void Awake(){
         loader = gameObject.AddComponent<AddressableLoader>();
         uIManager = canvas.GetComponent<UIManager>();
+        jsonManager = FindObjectOfType<JsonManager>();
+        while(!jsonManager.done){
+            await Task.Delay(100);
+        }
+        uIManager.SetRecipe(jsonManager.GetRecipes()[0]);
     }
 
     public void SelectRandomRecipe(){
-        if(jsonManager == null){
-            jsonManager = FindObjectOfType<JsonManager>();
-        }
         List<Recipe> recipes = jsonManager.GetRecipes();
         recipe = recipes[UnityEngine.Random.Range(0,recipes.Count)];
         SetRecipeGameObjectAndPouf();
-        uIManager.SetRecipe(recipe);
     }
 
     public bool CanAddThisIngrediant(IngredientManager _igredientManager){

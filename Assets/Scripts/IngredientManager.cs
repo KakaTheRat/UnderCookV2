@@ -24,7 +24,6 @@ public class IngredientManager : MonoBehaviour
         canBeCut = _canBeCut;
         canBeCook = _canBeCook;
         mat = _mat;
-        Debug.Log($"lol2 {_mat.name}");
     }
 
     public string GetIngredientName(){
@@ -82,18 +81,12 @@ public class IngredientManager : MonoBehaviour
 
     private void ApplyInternalMaterial(GameObject slicedObject)
     {           
-        Debug.Log($"lol3  {mat.name}");
         MeshRenderer renderer = slicedObject.GetComponent<MeshRenderer>();
         if (renderer != null && renderer.materials.Length > 1)
             {
-                Debug.Log("Coucou");
                 List<Material> mats = renderer.materials.ToList();
                 mats[1] = mat;
                 renderer.SetMaterials(mats);
             }
-        foreach(Material material in renderer.materials)
-        {
-            Debug.Log(material.name);
-        }
     }
 }

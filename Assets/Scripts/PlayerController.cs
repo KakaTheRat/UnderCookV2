@@ -18,12 +18,16 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float interactionDistance = 3f;
     [SerializeField] private LayerMask interactableLayer;
 
+    [Header("UI")]
+    [SerializeField] private Texture2D mousePointer;
+
     private InteractableObjects[] interactableObjects;
     private Animator animator;
     private GameObject underWiewItem;
     private GameObject holdingItem;
     private UIManager uiManager;
     private bool controller = false;
+    private bool mouseUnlock = false;
 
     void Awake()
     {
@@ -47,10 +51,26 @@ public class PlayerController : MonoBehaviour
         lookInput = context.ReadValue<Vector2>();
     }
 
+    public void OnMouseUnlock(InputAction.CallbackContext context){
+        if(context.started){
+            Debug.Log("Started");
+            mouseUnlock = true;
+            Cursor.lockState = CursorLockMode.Confined;
+            Cursor.visible = true;
+        }
+        if(context.canceled){
+            Debug.Log("Released");
+            mouseUnlock = false;
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+            DisableAllOutlines();
+        }
+    }
+
     void FixedUpdate(){
         HandleMovement();
-        HandleCamera();
-        HandleHover();
+        if(!mouseUnlock) HandleCamera();
+        else HandleHover();
     }
 
     private void HandleMovement()
@@ -86,7 +106,7 @@ public class PlayerController : MonoBehaviour
 
     private void HandleHover()
     {
-        Ray ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out RaycastHit hit, interactionDistance,interactableLayer))
         {
             Debug.DrawRay(ray.origin, ray.direction * interactionDistance, Color.green);
