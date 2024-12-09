@@ -1,0 +1,59 @@
+{
+  "recipes": [
+    {
+      "name": "Ebi Nigiri",
+      "ingredients": [
+        { "name": "Ebi", "cut": false, "cook": false },
+        { "name": "Rice", "cut": false, "cook": true }
+      ]
+    },
+    {
+      "name": "Octopus Nigiri",
+      "ingredients": [
+        { "name": "Tentacle", "cut": false, "cook": false },
+        { "name": "Rice", "cut": false, "cook": true }
+      ]
+    },
+    {
+      "name": "Salmon Nigiri",
+      "ingredients": [
+        { "name": "Salmon", "cut": false, "cook": false },
+        { "name": "Rice", "cut": false, "cook": true }
+      ]
+    },
+    {
+      "name": "Onigiri",
+      "ingredients": [
+        { "name": "Salmon", "cut": true, "cook": false },
+        { "name": "Rice", "cut": false, "cook": true }
+      ]
+    },
+    {
+      "name": "Roll",
+      "ingredients": [
+        { "name": "Ebi", "cut": true, "cook": false },
+        { "name": "Cucumber", "cut": true, "cook": false },
+        { "name": "Nori", "cut": true, "cook": false },
+        { "name": "Rice", "cut": false, "cook": true }
+      ]
+    },
+    {
+      "name": "Salmon Roll",
+      "ingredients": [
+        { "name": "Ebi", "cut": true, "cook": false },
+        { "name": "Cucumber", "cut": true, "cook": false },
+        { "name": "Nori", "cut": true, "cook": false },
+        { "name": "Salmon", "cut": false, "cook": false },
+        { "name": "Rice", "cut": false, "cook": true }
+      ]
+    }
+  ],
+  "ingredients": [
+    { "name": "Rice", "canBeCut": false, "canBeCook": true },
+    { "name": "Cucumber", "canBeCut": true, "canBeCook": false },
+    { "name": "Ebi", "canBeCut": true, "canBeCook": false },
+    { "name": "Nori", "canBeCut": true, "canBeCook": false },
+    { "name": "Salmon", "canBeCut": true, "canBeCook": false },
+    { "name": "Tentacle", "canBeCut": true, "canBeCook": false }
+  ]
+}
