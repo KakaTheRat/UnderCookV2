@@ -82,20 +82,4 @@ public class UIManager : MonoBehaviour
         }
         panel.SetActive(true);
     }
-
-    public void ClearIngredient(string ingredientName){
-        foreach(GameObject ingredientsText in ingredientsTexts){
-            for(int i = 0; i < ingredientsText.transform.childCount; i++){
-                TMP_Text tmp_text = ingredientsText.transform.GetChild(i).GetComponent<TMP_Text>();
-                if(tmp_text.text == ingredientName){
-                    ingredientsTexts.Remove(ingredientsText);
-                    Destroy(ingredientsText);
-                    if(ingredientsTexts.Count == 0){
-                        panel.SetActive(false);
-                    }
-                    return;
-                }
-            }
-        }
-    }
 }

@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.AI;
 using System;
 using System.Collections;
+using TMPro;
+using Unity.Mathematics;
 
 
 public class RabbitManager : MonoBehaviour
@@ -14,6 +16,8 @@ public class RabbitManager : MonoBehaviour
     [SerializeField] GameObject rabbitsPlace;
     [SerializeField] AudioClip successSound;
     [SerializeField] AudioClip orderSound;
+    [SerializeField] GameObject rabbitCanvas;
+    [SerializeField] TMP_Text canvasText;
     Animator animator;
     GameObject currentRabbit = null;
     NavMeshAgent navMesh;
@@ -33,6 +37,7 @@ public class RabbitManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        rabbitCanvas.transform.LookAt(GameObject.FindWithTag("Player").transform);
         animator.SetFloat("Speed", navMesh.velocity.magnitude);
         if(navMesh.remainingDistance == 0 && arrived == false){
             arrived = true;
@@ -54,6 +59,8 @@ public class RabbitManager : MonoBehaviour
 
     void GetNewRabbit(){
         GameObject newRabbit = rabbits[UnityEngine.Random.Range(0,rabbits.Count)];
+        rabbitCanvas.transform.SetParent(newRabbit.transform);
+        rabbitCanvas.transform.localPosition = new Vector3(0f,4.5f,0f);
         while(newRabbit == currentRabbit){
             newRabbit = rabbits[UnityEngine.Random.Range(0,rabbits.Count)];
         }
@@ -78,13 +85,16 @@ public class RabbitManager : MonoBehaviour
         if(recipeManager == null){
             recipeManager = FindObjectOfType<RecipeManager>();
         }
-        recipeManager.SelectRandomRecipe();
+        Recipe recipe = recipeManager.SelectRandomRecipe();
+        canvasText.text = recipe.name;
+        rabbitCanvas.SetActive(true);
     }
 
     public void Renvoyer(){
         audioSource.clip = successSound;
         audioSource.Play();
         animator.SetTrigger("Hello");
+        rabbitCanvas.SetActive(false);
         StartCoroutine(Coroutine_WaitThenLog(1.5f,EndRenvoyer));
     }
 

@@ -26,10 +26,11 @@ public class RecipeManager : MonoBehaviour
         uIManager.SetRecipe(jsonManager.GetRecipes()[0]);
     }
 
-    public void SelectRandomRecipe(){
+    public Recipe SelectRandomRecipe(){
         List<Recipe> recipes = jsonManager.GetRecipes();
         recipe = recipes[UnityEngine.Random.Range(0,recipes.Count)];
         SetRecipeGameObjectAndPouf();
+        return recipe;
     }
 
     public bool CanAddThisIngrediant(IngredientManager _igredientManager){
@@ -56,7 +57,6 @@ public class RecipeManager : MonoBehaviour
                     if(ingredientManager.GetIngredientName() == "Nori"){
                         _igredientToAdd.transform.localPosition = new Vector3(0f,0f,0.00161f);
                     }
-                    uIManager.ClearIngredient(ingredientManager.GetIngredientName());
                     CheckIfRecipeComplete();
                 }
            }
