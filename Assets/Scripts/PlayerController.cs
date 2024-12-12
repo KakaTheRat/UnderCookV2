@@ -18,8 +18,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float interactionDistance = 3f;
     [SerializeField] private LayerMask interactableLayer;
 
-    [Header("UI")]
-    [SerializeField] private Texture2D mousePointer;
+    [Header("Interqction UI")]
+    [SerializeField] InterractionCanvas interactionMenuManager;
+
 
     private InteractableObjects[] interactableObjects;
     private Animator animator;
@@ -63,7 +64,7 @@ public class PlayerController : MonoBehaviour
             mouseUnlock = false;
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
-            DisableAllOutlines();
+            DisableAllOutlinesAndHideMenu();
         }
     }
 
@@ -114,12 +115,13 @@ public class PlayerController : MonoBehaviour
             if (item != null && item.GetCanBeInteracted())
             {
                 item.ActivateOutline(true);
+                item.UpdateAndShowInteractionMenu(interactionMenuManager);
                 uiManager.SetInteractText(item.GetInteractrionText());
                 uiManager.ToggleInteractText(true);
                 if(underWiewItem != hit.collider.gameObject){
                     underWiewItem = hit.collider.gameObject;
                 }
-                DisableAllOutlines(item);
+                DisableAllOutlinesAndHideMenu(item);
                 return;
             }
         }
@@ -127,14 +129,14 @@ public class PlayerController : MonoBehaviour
         {
             Debug.DrawRay(ray.origin, ray.direction * interactionDistance, Color.red);
         }
-        DisableAllOutlines();
+        DisableAllOutlinesAndHideMenu();
     }
 
     public GameObject GetHoldingItem(){
         return holdingItem;
     }
 
-    private void DisableAllOutlines(InteractableObjects Ignored = null)
+    private void DisableAllOutlinesAndHideMenu(InteractableObjects Ignored = null)
     {
        foreach (var outinteractableObject in interactableObjects)
        {    
@@ -145,6 +147,7 @@ public class PlayerController : MonoBehaviour
        if(Ignored == null){
             underWiewItem = null;
             uiManager.ToggleInteractText(false);
+            interactionMenuManager.SetMenuActive(false);
        }
     }
 
@@ -164,15 +167,15 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public void OnInteract(InputAction.CallbackContext context){
-        if(context.phase == InputActionPhase.Performed){
-            if(underWiewItem == null){Debug.Log("Nothing to interact with"); return;}
-            InteractableObjects item = underWiewItem.GetComponent<InteractableObjects>();
-            if(item.GetCanBeInteracted()){
-                item.Interact();
-            } 
-        }
-    }
+    // public void OnInteract(InputAction.CallbackContext context){
+    //     if(context.phase == InputActionPhase.Performed){
+    //         if(underWiewItem == null){Debug.Log("Nothing to interact with"); return;}
+    //         InteractableObjects item = underWiewItem.GetComponent<InteractableObjects>();
+    //         if(item.GetCanBeInteracted()){
+    //             item.Interact();
+    //         } 
+    //     }
+    // }
 
     public void DestroyHoldingItem(){
         Destroy(holdingItem);

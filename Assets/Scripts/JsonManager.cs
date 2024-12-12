@@ -24,7 +24,7 @@ using UnityEngine.ResourceManagement.AsyncOperations;
     }
 
     [System.Serializable]
-    public class Food
+    public class FoodInfo
     {
         public List<Recipe> recipes;
         public List<Ingredient> ingredients;
@@ -32,7 +32,7 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 
 public class JsonManager : MonoBehaviour
 {
-    Food foodInfo;
+    FoodInfo foodInfo;
     public bool done = false;
     // Start is called before the first frame update
     void Awake()
@@ -48,7 +48,7 @@ public class JsonManager : MonoBehaviour
             string json = handle.Result.text;
 
             // Optionnel : Convertir le JSON en un objet C#
-            foodInfo = JsonUtility.FromJson<Food>(json);
+            foodInfo = JsonUtility.FromJson<FoodInfo>(json);
             Debug.Log($"JSON chargé");
             done = true;
             return;
@@ -56,7 +56,7 @@ public class JsonManager : MonoBehaviour
         Debug.Log($"Error JSON non chargé");
     }
 
-    public Food GetFoodInfo(){
+    public FoodInfo GetFoodInfo(){
         return foodInfo;
     }
 
