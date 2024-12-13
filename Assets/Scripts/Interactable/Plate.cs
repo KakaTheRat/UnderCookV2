@@ -4,37 +4,28 @@ using UnityEngine.UI;
 public class Plate : InteractableObjects
 {
     private RecipeManager recipeManager;
-    public override bool GetCanBeInteracted()
+    public override bool GetCanBeInteracted(int handID)
     {
         if(recipeManager == null) recipeManager = gameObject.GetComponent<RecipeManager>();
-        GameObject holdingItem = playerController.GetHoldingItem();
+        GameObject holdingItem = playerController.GetHoldingItem(handID);
         if(holdingItem == null){return false;}
         IngredientManager ingredientManager = holdingItem.GetComponent<IngredientManager>();
         return recipeManager.CanAddThisIngrediant(ingredientManager);
     }
 
-    public override void Interact()
+    public override void Interact(int handID)
     {
-        recipeManager.AddIngrediantToPlate(playerController.GetHoldingItem());
+        recipeManager.AddIngrediantToPlate(playerController.GetHoldingItem(handID));
         AudioSource audio = GetComponent<AudioSource>();
         audio.Play();
-        playerController.ReleaseItem();
+        playerController.ReleaseItem(handID);
     }
 
     public override void SetInteractText(){
-        GameObject playerHolding = playerController.GetHoldingItem();
-        if(playerHolding != null){
-            interactionText = $"put the {playerHolding.GetComponent<IngredientManager>().GetIngredientName()} on the plate";
-        }
+        interactionText = $"put the item on the plate";
     }
 
     public override void ChangeInteractionMenuText(InterractionCanvas interactionMenuManager){
         interactionMenuManager.SetInteractionText($"Place the ingredient from your:");
-    }
-    public override void ChangeButtonsAction(InterractionCanvas interactionMenuManager){
-        foreach(Button button in interactionMenuManager.GetButtons()){
-            button.onClick.RemoveAllListeners();
-            button.onClick.AddListener( () => Interact());
-        }
     }
 }

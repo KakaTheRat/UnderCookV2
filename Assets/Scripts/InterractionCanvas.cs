@@ -17,13 +17,13 @@ public class InterractionCanvas : MonoBehaviour
 
     void Update(){
         gameObject.transform.LookAt(Camera.main.transform);
-        Quaternion rotation = gameObject.transform.rotation;
-        gameObject.transform.rotation = quaternion.Euler(rotation.x, -rotation.y, rotation.z);
     }
 
-    public void MoveTo(GameObject interactableObject){
-        Vector3 endPos = interactableObject.transform.position;
-        endPos.y += 1f;
+    public void MoveTo(InteractableObjects interactableObject){
+        Vector3 endPos = interactableObject.gameObject.transform.position;
+        if(interactableObject is Food or Plate) endPos.y += 1f;
+        else if(interactableObject is Knife or Pot) endPos.y += 1.2f;
+        else if(interactableObject is Bin) endPos.y += 2.3f;
         gameObject.transform.position = endPos;
     }
 
@@ -45,5 +45,10 @@ public class InterractionCanvas : MonoBehaviour
 
     public void SetMenuActive(bool _active){
         gameObject.SetActive(_active);
+    }
+
+    public void SetButonInteractable(List<bool> _interactable){
+        leftHandButton.interactable = _interactable[0];
+        rightHandButton.interactable = _interactable[1];
     }
 }

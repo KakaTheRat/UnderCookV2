@@ -3,11 +3,11 @@ using UnityEngine;
 using System.Threading.Tasks;
 using System;
 using System.Collections;
+using Unity.Mathematics;
 
 public class RecipeManager : MonoBehaviour
 {
     [SerializeField] private Canvas canvas;
-    UIManager uIManager;
     public Recipe recipe;
     List<GameObject> ingredientInPlate = new List<GameObject>();
     AddressableLoader loader;
@@ -18,12 +18,11 @@ public class RecipeManager : MonoBehaviour
 
     async void Awake(){
         loader = gameObject.AddComponent<AddressableLoader>();
-        uIManager = canvas.GetComponent<UIManager>();
         jsonManager = FindObjectOfType<JsonManager>();
         while(!jsonManager.done){
             await Task.Delay(100);
         }
-        uIManager.SetRecipe(jsonManager.GetRecipes()[0]);
+        FindAnyObjectByType<RecipeCanvas>().Interact(0);
     }
 
     public Recipe SelectRandomRecipe(){
@@ -51,6 +50,7 @@ public class RecipeManager : MonoBehaviour
                     ingredientInPlate.Add(ingredientManager.gameObject);
                     _igredientToAdd.transform.SetParent(gameObject.transform);
                     _igredientToAdd.transform.localPosition = new Vector3(0f,0f,0.00048f);
+                    _igredientToAdd.transform.localRotation = quaternion.Euler(0,0,0);
                     if(ingredientManager.GetIngredientName() == "Cucumber" || ingredientManager.GetIngredientName() == "Tentacle"){
                         _igredientToAdd.transform.localPosition = new Vector3(0f,0f,0.00208f);
                     }

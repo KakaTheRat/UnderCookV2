@@ -5,11 +5,13 @@ TagManager:
   serializedVersion: 2
   tags:
   - PlayerHead
-  - HoldingPlaceHolder
   - FxTemporaire
   - CutPlaceHolder
   - Rabbit
   - RabbitSpawn
+  - HoldingPlaceHolder0
+  - HoldingPlaceHolder1
+  - KnifePlaceHolder
   layers:
   - Default
   - TransparentFX

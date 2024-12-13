@@ -3,34 +3,25 @@ using UnityEngine.UI;
 
 public class Bin : InteractableObjects
 {
-    public override bool GetCanBeInteracted()
+    public override bool GetCanBeInteracted(int handId)
     {
-        GameObject holdingItem = playerController.GetHoldingItem();
+        GameObject holdingItem = playerController.GetHoldingItem(handId);
         if(holdingItem != null){
             return true;
         }
         else{return false;}
     }
 
-    public override void Interact()
+    public override void Interact(int handId)
     {
-        playerController.DestroyHoldingItem();
+        playerController.DestroyHoldingItem(handId);
     }
 
     public override void SetInteractText(){
-        GameObject playerHolding = playerController.GetHoldingItem();
-        if(playerHolding != null){
-            interactionText = $"throw the {playerHolding.GetComponent<IngredientManager>().GetIngredientName()}";
-        }
+        interactionText = $"throw the item from your:";
     }
 
     public override void ChangeInteractionMenuText(InterractionCanvas interactionMenuManager){
-        interactionMenuManager.SetInteractionText("Throw the item in:");
-    }
-    public override void ChangeButtonsAction(InterractionCanvas interactionMenuManager){
-        foreach(Button button in interactionMenuManager.GetButtons()){
-            button.onClick.RemoveAllListeners();
-            button.onClick.AddListener( () => Interact());
-        }
+        interactionMenuManager.SetInteractionText("Throw the item in your:");
     }
 }

@@ -7,22 +7,24 @@ public class Food : InteractableObjects
     [SerializeField] GameObject ingredientPrefab;
     private bool canBeCut;
     private bool canBeCook;
-    public override bool GetCanBeInteracted(){
-        GameObject holdingItem = playerController.GetHoldingItem();
+    public override bool GetCanBeInteracted(int interactionHand){
+        GameObject holdingItem = playerController.GetHoldingItem(interactionHand);
         if(holdingItem == null){
             return true;
         }else{return false;}
     }
 
-    public override void Interact(){
+    public override void Interact(int interactionHand){
+        Debug.Log($"handId = {interactionHand}");
         GameObject clone = Instantiate(ingredientPrefab);
         clone.transform.localScale = transform.localScale; 
+        clone.transform.localRotation = transform.localRotation; 
         SetInfos();
         IngredientManager ingredientManager = clone.AddComponent<IngredientManager>();
         ingredientManager.SetAttributes(itemName, canBeCut, canBeCook,mat);
         AudioSource audio = GetComponent<AudioSource>();
         audio.Play();
-        playerController.HoldItem(clone);
+        playerController.HoldItem(clone, interactionHand);
     }
 
     void SetInfos(){
@@ -38,11 +40,5 @@ public class Food : InteractableObjects
 
     public override void ChangeInteractionMenuText(InterractionCanvas interactionMenuManager){
         interactionMenuManager.SetInteractionText($"Take the {itemName} in your:");
-    }
-    public override void ChangeButtonsAction(InterractionCanvas interactionMenuManager){
-        foreach(Button button in interactionMenuManager.GetButtons()){
-            button.onClick.RemoveAllListeners();
-            button.onClick.AddListener( () => Interact());
-        }
     }
 }

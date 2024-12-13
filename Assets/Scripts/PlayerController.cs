@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -24,9 +25,8 @@ public class PlayerController : MonoBehaviour
 
     private InteractableObjects[] interactableObjects;
     private Animator animator;
-    private GameObject underWiewItem;
-    private GameObject holdingItem;
-    private UIManager uiManager;
+    private GameObject underWiewItem = null;
+    private List<GameObject> holdingItem = new() {null, null};
     private bool controller = false;
     private bool mouseUnlock = false;
 
@@ -38,7 +38,6 @@ public class PlayerController : MonoBehaviour
         rb.freezeRotation = true;
         animator = GetComponent<Animator>();
         interactableObjects = FindObjectsOfType<InteractableObjects>();
-        uiManager = FindObjectOfType<UIManager>();
     }
 
     public void OnMove(InputAction.CallbackContext context)
@@ -112,28 +111,19 @@ public class PlayerController : MonoBehaviour
         {
             Debug.DrawRay(ray.origin, ray.direction * interactionDistance, Color.green);
             InteractableObjects item = hit.collider.GetComponent<InteractableObjects>();
-            if (item != null && item.GetCanBeInteracted())
+            if (item != null && item.gameObject != underWiewItem)
             {
                 item.ActivateOutline(true);
                 item.UpdateAndShowInteractionMenu(interactionMenuManager);
-                uiManager.SetInteractText(item.GetInteractrionText());
-                uiManager.ToggleInteractText(true);
-                if(underWiewItem != hit.collider.gameObject){
-                    underWiewItem = hit.collider.gameObject;
-                }
+                underWiewItem = hit.collider.gameObject;
                 DisableAllOutlinesAndHideMenu(item);
                 return;
             }
         }
-        else
-        {
-            Debug.DrawRay(ray.origin, ray.direction * interactionDistance, Color.red);
-        }
-        DisableAllOutlinesAndHideMenu();
     }
 
-    public GameObject GetHoldingItem(){
-        return holdingItem;
+    public GameObject GetHoldingItem(int handID){
+        return holdingItem[handID];
     }
 
     private void DisableAllOutlinesAndHideMenu(InteractableObjects Ignored = null)
@@ -146,44 +136,33 @@ public class PlayerController : MonoBehaviour
        }
        if(Ignored == null){
             underWiewItem = null;
-            uiManager.ToggleInteractText(false);
             interactionMenuManager.SetMenuActive(false);
        }
     }
 
-    public void HoldItem(GameObject itemToHold){
-        holdingItem = itemToHold;
-        holdingItem.transform.SetParent(GameObject.FindGameObjectWithTag("HoldingPlaceHolder").transform);
-        string itemName = holdingItem.GetComponent<IngredientManager>().GetIngredientName();
-        holdingItem.transform.localPosition =  new Vector3(-0.00384f, 0.00214f, -0.00331f);
-        if(itemName == "Cucumber" || itemName == "Nori" || itemName == "Tentacle"){
-            holdingItem.transform.localRotation =  Quaternion.Euler(12.029f,-75.593f, 157.392f);
-        }else{
-            holdingItem.transform.localRotation =  Quaternion.Euler(12.029f,-75.593f, 61.671f);
-        }
-        animator.SetBool("Holding", true);
-        foreach(InteractableObjects interactableObject in interactableObjects){
-            interactableObject.SetInteractText();
+    public void HoldItem(GameObject itemToHold, int handId){
+        holdingItem[handId] = itemToHold;
+        holdingItem[handId].transform.SetParent(GameObject.FindGameObjectWithTag($"HoldingPlaceHolder{handId}").transform);
+        holdingItem[handId].transform.localPosition =  new Vector3(0f, 0f,0f);
+    }
+
+    public void OnInteract(InputAction.CallbackContext context){
+        if(context.phase == InputActionPhase.Performed){
+            if(underWiewItem == null){Debug.Log("Nothing to interact with"); return;}
+            InteractableObjects item = underWiewItem.GetComponent<InteractableObjects>();
+            if((item.GetCanBeInteracted(0) || item.GetCanBeInteracted(1))  && (item is RecipeCanvas || item is Mirror)){
+                item.Interact(0);
+            } 
         }
     }
 
-    // public void OnInteract(InputAction.CallbackContext context){
-    //     if(context.phase == InputActionPhase.Performed){
-    //         if(underWiewItem == null){Debug.Log("Nothing to interact with"); return;}
-    //         InteractableObjects item = underWiewItem.GetComponent<InteractableObjects>();
-    //         if(item.GetCanBeInteracted()){
-    //             item.Interact();
-    //         } 
-    //     }
-    // }
-
-    public void DestroyHoldingItem(){
-        Destroy(holdingItem);
-        ReleaseItem();
+    public void DestroyHoldingItem(int handId){
+        Destroy(holdingItem[handId]);
+        ReleaseItem(handId);
     }
 
-    public void ReleaseItem(){
-        holdingItem = null;
+    public void ReleaseItem(int handId){
+        holdingItem[handId] = null;
         animator.SetBool("Holding", false);
     }
 

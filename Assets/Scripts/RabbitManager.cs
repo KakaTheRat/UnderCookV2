@@ -37,7 +37,7 @@ public class RabbitManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        rabbitCanvas.transform.LookAt(GameObject.FindWithTag("Player").transform);
+        rabbitCanvas.transform.LookAt(Camera.main.transform);
         animator.SetFloat("Speed", navMesh.velocity.magnitude);
         if(navMesh.remainingDistance == 0 && arrived == false){
             arrived = true;
