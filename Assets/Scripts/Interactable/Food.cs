@@ -15,7 +15,6 @@ public class Food : InteractableObjects
     }
 
     public override void Interact(int interactionHand){
-        Debug.Log($"handId = {interactionHand}");
         GameObject clone = Instantiate(ingredientPrefab);
         clone.transform.localScale = transform.localScale; 
         clone.transform.localRotation = transform.localRotation; 
@@ -25,6 +24,7 @@ public class Food : InteractableObjects
         AudioSource audio = GetComponent<AudioSource>();
         audio.Play();
         playerController.HoldItem(clone, interactionHand);
+        Debug.Log(clone.name);
     }
 
     void SetInfos(){

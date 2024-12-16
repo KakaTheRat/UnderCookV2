@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
@@ -19,8 +21,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float interactionDistance = 3f;
     [SerializeField] private LayerMask interactableLayer;
 
-    [Header("Interqction UI")]
+    [Header("UI")]
     [SerializeField] InterractionCanvas interactionMenuManager;
+    [SerializeField] List<RawImage> handImages;
 
 
     private InteractableObjects[] interactableObjects;
@@ -142,8 +145,11 @@ public class PlayerController : MonoBehaviour
 
     public void HoldItem(GameObject itemToHold, int handId){
         holdingItem[handId] = itemToHold;
+        Quaternion previousRotation = itemToHold.transform.rotation;
+        Debug.Log($"HoldingPlaceHolder{handId}");
         holdingItem[handId].transform.SetParent(GameObject.FindGameObjectWithTag($"HoldingPlaceHolder{handId}").transform);
         holdingItem[handId].transform.localPosition =  new Vector3(0f, 0f,0f);
+        holdingItem[handId].transform.localRotation = previousRotation;
     }
 
     public void OnInteract(InputAction.CallbackContext context){
