@@ -1,10 +1,13 @@
 using UnityEngine;
 using UnityEngine.UI;
 
+[System.Serializable]
 public class Food : InteractableObjects
 {
     [SerializeField] private Material mat;
     [SerializeField] GameObject ingredientPrefab;
+    [SerializeField] private string itemName;
+    [SerializeField] private string itemDescription;
     private bool canBeCut;
     private bool canBeCook;
     public override bool GetCanBeInteracted(int interactionHand){
@@ -16,8 +19,8 @@ public class Food : InteractableObjects
 
     public override void Interact(int interactionHand){
         GameObject clone = Instantiate(ingredientPrefab);
-        clone.transform.localScale = transform.localScale; 
-        clone.transform.localRotation = transform.localRotation; 
+        clone.transform.localScale = transform.localScale;
+        clone.transform.localRotation = transform.localRotation;
         SetInfos();
         IngredientManager ingredientManager = clone.AddComponent<IngredientManager>();
         ingredientManager.SetAttributes(itemName, canBeCut, canBeCook,mat);
@@ -40,5 +43,16 @@ public class Food : InteractableObjects
 
     public override void ChangeInteractionMenuText(InterractionCanvas interactionMenuManager){
         interactionMenuManager.SetInteractionText($"Take the {itemName} in your:");
+    }
+
+    public GameObject GetIngredientPrefab(){
+        return ingredientPrefab;
+    }
+
+    public string GetIngredientName(){
+        return itemName;
+    }
+    public string GetIngredientDescription(){
+        return itemDescription;
     }
 }

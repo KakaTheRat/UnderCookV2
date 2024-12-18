@@ -7,8 +7,6 @@ using System.Collections.Generic;
 
 public class InteractableObjects : MonoBehaviour
 {
-
-    [SerializeField] protected string itemName;
     protected string interactionText;
 
     private GameObject player;
@@ -25,10 +23,6 @@ public class InteractableObjects : MonoBehaviour
         outline.OutlineColor = Color.blue;
         outline.OutlineWidth = 0f;
         SetInteractText();        
-    }
-
-    public string GetName(){
-        return itemName;
     }
 
     public string GetInteractrionText(){

@@ -23,7 +23,6 @@ public class PlayerController : MonoBehaviour
 
     [Header("UI")]
     [SerializeField] InterractionCanvas interactionMenuManager;
-    [SerializeField] List<RawImage> handImages;
 
 
     private InteractableObjects[] interactableObjects;
@@ -156,7 +155,7 @@ public class PlayerController : MonoBehaviour
         if(context.phase == InputActionPhase.Performed){
             if(underWiewItem == null){Debug.Log("Nothing to interact with"); return;}
             InteractableObjects item = underWiewItem.GetComponent<InteractableObjects>();
-            if((item.GetCanBeInteracted(0) || item.GetCanBeInteracted(1))  && (item is RecipeCanvas || item is Mirror)){
+            if((item.GetCanBeInteracted(0) || item.GetCanBeInteracted(1))  && (item is RecipeCanvas || item is Mirror || item is Placard)){
                 item.Interact(0);
             } 
         }
