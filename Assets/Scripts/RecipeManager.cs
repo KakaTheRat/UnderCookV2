@@ -16,13 +16,9 @@ public class RecipeManager : MonoBehaviour
     JsonManager jsonManager;
     RabbitManager rabbitManager;
 
-    async void Awake(){
+     void Awake(){
         loader = gameObject.AddComponent<AddressableLoader>();
         jsonManager = FindObjectOfType<JsonManager>();
-        while(!jsonManager.done){
-            await Task.Delay(100);
-        }
-        FindAnyObjectByType<RecipeCanvas>().UpdateCanvas();
     }
 
     public Recipe SelectRandomRecipe(){
@@ -34,6 +30,9 @@ public class RecipeManager : MonoBehaviour
 
     public bool CanAddThisIngrediant(IngredientManager _igredientManager){
         if(recipe == null){return false;}
+        foreach(GameObject gameObject in ingredientInPlate){
+                    if(gameObject.GetComponent<IngredientManager>().GetIngredientName() == _igredientManager.GetIngredientName()) return false;
+                }
         foreach(IngredientInRecipe ingredient in recipe.ingredients){
             if(ingredient.name == _igredientManager.GetIngredientName() && ingredient.cook == _igredientManager.GetCook() && ingredient.cut == _igredientManager.GetCut()){
                 return true;
@@ -73,8 +72,7 @@ public class RecipeManager : MonoBehaviour
         loader.GetGameObject(recipe.name, (addressableOject) => {
             if(addressableOject != null){
                 recipeGameObject = addressableOject;
-                Debug.Log("Loaded Item");
-            }else{Debug.Log("Item Not Load " + recipe.name);}
+            }
         });
         loader.GetGameObject("Pouf", (addressableOject) => {
             if(addressableOject != null){
@@ -82,8 +80,7 @@ public class RecipeManager : MonoBehaviour
                 poufGO.transform.localScale = new Vector3(0.28405f,0.28405f,0.28405f);
                 poufGO.transform.localPosition = new Vector3(0f,0f,0.00332f);
                 pouf = poufGO.GetComponent<ParticleSystem>();
-                Debug.Log("Loaded Item");
-            }else{Debug.Log("Item Not Load " + recipe.name);}
+            }
         });
     }
 

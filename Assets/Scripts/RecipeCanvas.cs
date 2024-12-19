@@ -24,6 +24,7 @@ public class RecipeCanvas : MonoBehaviour
     Vector2 defaultSize;
     Canvas canvas;
     PlayerInput playerInput;
+    List<Recipe> allRecipes;
 
     void Awake(){
         graphicRaycaster = GetComponent<GraphicRaycaster>();
@@ -55,18 +56,27 @@ public class RecipeCanvas : MonoBehaviour
 
     public void NextRecipe(){
         actualRecipe++;
-        actualRecipe = Math.Clamp(actualRecipe, 0, FindObjectOfType<JsonManager>().GetFoodInfo().recipes.Count - 1);
-        UpdateCanvas();
+        MaybeUpdateCanvas();
     }
     public void PreviousRecipe(){
         actualRecipe--;
-        actualRecipe = Math.Clamp(actualRecipe, 0, FindObjectOfType<JsonManager>().GetFoodInfo().recipes.Count - 1);
+        MaybeUpdateCanvas();
+    }
+
+    private void MaybeUpdateCanvas(){
+        int lastactualRecipe = actualRecipe;
+        actualRecipe = Math.Clamp(actualRecipe, 0, allRecipes.Count - 1);
+        if(actualRecipe != lastactualRecipe)return;
         UpdateCanvas();
     }
 
-    public void UpdateCanvas(){
-        JsonManager jsonManager = FindObjectOfType<JsonManager>();
-        Recipe recette = jsonManager.GetFoodInfo().recipes[actualRecipe];
+    public void InitRecipes(List<Recipe> recipes){
+        allRecipes = recipes;
+        UpdateCanvas();
+    }
+
+    private void UpdateCanvas(){
+        Recipe recette = allRecipes[actualRecipe];
         RecipeName.text = recette.name;
         foreach(GameObject ingredientText in ingredientsTexts){
             Destroy(ingredientText);
@@ -119,5 +129,11 @@ public class RecipeCanvas : MonoBehaviour
     public void NewRecipe(){
         RayCastOff();
         newRecipeCanvas.Show();
+    }
+
+    public void AddNewRecipe(Recipe newRecipe){
+        allRecipes.Add(newRecipe);
+        actualRecipe = allRecipes.Count - 1;
+        UpdateCanvas();
     }
 }

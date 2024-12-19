@@ -29,6 +29,7 @@ public class PlayerController : MonoBehaviour
     private List<GameObject> holdingItem = new() {null, null};
     private bool controller = false;
     private bool mouseUnlock = false;
+    PlayerInput playerInput;
 
     void Awake()
     {
@@ -38,6 +39,7 @@ public class PlayerController : MonoBehaviour
         rb.freezeRotation = true;
         animator = GetComponent<Animator>();
         interactableObjects = FindObjectsOfType<InteractableObjects>();
+        playerInput = GetComponent<PlayerInput>();
     }
 
     public void OnMove(InputAction.CallbackContext context)
@@ -141,21 +143,10 @@ public class PlayerController : MonoBehaviour
     public void HoldItem(GameObject itemToHold, int handId){
         holdingItem[handId] = itemToHold;
         Quaternion previousRotation = itemToHold.transform.rotation;
-        Debug.Log($"HoldingPlaceHolder{handId}");
         holdingItem[handId].transform.SetParent(GameObject.FindGameObjectWithTag($"HoldingPlaceHolder{handId}").transform);
         holdingItem[handId].transform.localPosition =  new Vector3(0f, 0f,0f);
         holdingItem[handId].transform.localRotation = previousRotation;
     }
-
-    // public void OnInteract(InputAction.CallbackContext context){
-    //     if(context.phase == InputActionPhase.Performed){
-    //         if(underWiewItem == null) return;
-    //         InteractableObjects item = underWiewItem.GetComponent<InteractableObjects>();
-    //         if((item.GetCanBeInteracted(0) || item.GetCanBeInteracted(1))  && (item is Mirror || item is Placard)){
-    //             item.Interact(0);
-    //         } 
-    //     }
-    // }
 
     public void DestroyHoldingItem(int handId){
         Destroy(holdingItem[handId]);
@@ -168,11 +159,11 @@ public class PlayerController : MonoBehaviour
     }
 
     public void Static(bool _static){
-        if(_static){
-            rb.isKinematic = true;
-            return;
+        playerInput.enabled = !_static;
+        rb.isKinematic = _static;
+        if(!_static){
+            mouseUnlock = _static;
         }
-        rb.isKinematic = false;
     }
 
     public void PauseTime(InputAction.CallbackContext context){

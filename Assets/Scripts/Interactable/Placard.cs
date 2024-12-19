@@ -25,7 +25,6 @@ public class Placard : InteractableObjects
     public override void Interact(int interactionHand = 0){
         if(magique) GeneratePlacardMagic();
         for(int i = 0; i < placardContent.Count ; i++){
-            Debug.Log("Interracted");
             GameObject newButtonGameObject = Instantiate(placardCanvas.GetShelfButton() , placardCanvas.GetShelfButton().transform.parent.transform);
             Button newButton = newButtonGameObject.GetComponent<Button>();
             TMP_Text newButtonText = newButtonGameObject.transform.GetChild(0).GetComponent<TMP_Text>();

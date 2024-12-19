@@ -27,7 +27,6 @@ public class Food : InteractableObjects
         AudioSource audio = GetComponent<AudioSource>();
         audio.Play();
         playerController.HoldItem(clone, interactionHand);
-        Debug.Log(clone.name);
     }
 
     void SetInfos(){

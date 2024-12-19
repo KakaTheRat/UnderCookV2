@@ -2,6 +2,7 @@ using UnityEngine.AddressableAssets;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.ResourceManagement.AsyncOperations;
+using UnityEngine.Rendering.Universal.Internal;
 
 [System.Serializable]
     public class Ingredient{
@@ -49,6 +50,7 @@ public class JsonManager : MonoBehaviour
 
             // Optionnel : Convertir le JSON en un objet C#
             foodInfo = JsonUtility.FromJson<FoodInfo>(json);
+            FindAnyObjectByType<RecipeCanvas>().InitRecipes(new List<Recipe>(foodInfo.recipes));
             Debug.Log($"JSON chargé");
             done = true;
             return;
