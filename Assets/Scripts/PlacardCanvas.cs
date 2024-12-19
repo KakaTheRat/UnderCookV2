@@ -1,11 +1,13 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class PlacardCanvas : MonoBehaviour
 {
     [SerializeField] GameObject Shelfbutton;
     [SerializeField] GameObject FoodImage;
+    [SerializeField] Button closeButton;
 
     [SerializeField] TMP_Text ingredientName;
     [SerializeField] TMP_Text ingredientDescription;
@@ -22,6 +24,9 @@ public class PlacardCanvas : MonoBehaviour
     public GameObject GetFoodImage(){
         return FoodImage;
     } 
+    public Button GetCloseButton(){
+        return closeButton;
+    } 
     public void Show(){
         HideText();
         gameObject.SetActive(true);
@@ -31,8 +36,8 @@ public class PlacardCanvas : MonoBehaviour
     }
     public void Hide(){
         gameObject.SetActive(false);
-         playerInput.enabled = true;
-         Cursor.lockState = CursorLockMode.Locked;
+        playerInput.enabled = true;
+        Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
 

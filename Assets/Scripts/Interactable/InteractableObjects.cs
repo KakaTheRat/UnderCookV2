@@ -52,21 +52,33 @@ public class InteractableObjects : MonoBehaviour
     public virtual void UpdateAndShowInteractionMenu(InterractionCanvas interactionMenuManager){
         interactionMenuManager.MoveTo(this);
         ChangeInteractionMenuText(interactionMenuManager);
-        ChangeButtonsAction(interactionMenuManager);
+        ChangeButtonsAction(interactionMenuManager, this is Placard ? true : false);
         ChangeButtonsInteractable(interactionMenuManager);
         interactionMenuManager.SetMenuActive(true);
     }
 
     public virtual void ChangeInteractionMenuText(InterractionCanvas interactionMenuManager){}//Defined in child
 
-    public void ChangeButtonsAction(InterractionCanvas interactionMenuManager){
+    public void ChangeButtonsAction(InterractionCanvas interactionMenuManager, bool singleButton = false){
+        if(singleButton){
+            Button button = interactionMenuManager.GetOpenButton();
+            button.onClick.RemoveAllListeners();
+            button.onClick.AddListener( () => Interact(0));
+            button.gameObject.SetActive(true);
+            foreach(Button otherButton in interactionMenuManager.GetButtons()){
+                otherButton.gameObject.SetActive(false);
+            }
+            return;
+        }
         for(int i = 0; i < interactionMenuManager.GetButtons().Count; i++){
             Button button = interactionMenuManager.GetButtons()[i];
             button.onClick.RemoveAllListeners();
             int handid = i;
             button.onClick.AddListener( () => Interact(handid));
-            button.onClick.AddListener( () => interactionMenuManager.SetMenuActive(false));
+            button.onClick.AddListener( () => ChangeButtonsInteractable(interactionMenuManager));
+            button.gameObject.SetActive(true);
         }
+        interactionMenuManager.GetOpenButton().gameObject.SetActive(false);
     }
 
     public void ChangeButtonsInteractable(InterractionCanvas interactionMenuManager){

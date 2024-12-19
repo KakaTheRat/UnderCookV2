@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.UI;
 
 [System.Serializable]
@@ -13,7 +14,8 @@ public class ShelfContent{
 }
 
 public class Placard : InteractableObjects
-{
+{   
+    [SerializeField] string placardName;
     [SerializeField] PlacardCanvas placardCanvas;
     [SerializeField] bool magique;
     [SerializeField] List<ShelfContent> placardContent = new();
@@ -21,7 +23,6 @@ public class Placard : InteractableObjects
     List<GameObject> imageCreated = new();
     
     public override void Interact(int interactionHand = 0){
-        Reset();
         if(magique) GeneratePlacardMagic();
         for(int i = 0; i < placardContent.Count ; i++){
             Debug.Log("Interracted");
@@ -36,6 +37,9 @@ public class Placard : InteractableObjects
             buttonsCreated.Add(newButtonGameObject);
         }
         placardCanvas.GetShelfButton().SetActive(false);
+        Button closeButton = placardCanvas.GetCloseButton();
+        closeButton.onClick.RemoveAllListeners();
+        closeButton.onClick.AddListener(() => Close());
         OpenShelf(0);
     }
 
@@ -48,7 +52,6 @@ public class Placard : InteractableObjects
             Texture2D previewImage = AssetPreview.GetAssetPreview(placardContent[shelfIndex].food[i].GetIngredientPrefab());
             while(previewImage == null){
                 previewImage = AssetPreview.GetAssetPreview(placardContent[shelfIndex].food[i].GetIngredientPrefab());
-                Debug.Log("J'ai attendu");
                 await Task.Delay(10);
             }
             newRawImage.texture = previewImage;
@@ -101,10 +104,21 @@ public class Placard : InteractableObjects
         }
     }
 
+    public override void ChangeInteractionMenuText(InterractionCanvas interactionMenuManager){
+        interactionMenuManager.SetInteractionText(placardName);
+    }
+
     void UdateTextInfo(Food food){
         placardCanvas.SetIngredientName(food.GetIngredientName());
         placardCanvas.SetIngredientDescription(food.GetIngredientDescription());
     }
 
-    public override void UpdateAndShowInteractionMenu(InterractionCanvas interactionMenuManager){}
+    public string GetName(){
+        return placardName;
+    }
+
+    void Close(){
+        Reset();
+        placardCanvas.Hide();
+    }
 }

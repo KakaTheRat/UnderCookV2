@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor;
 using UnityEngine.InputSystem;
-using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
@@ -55,15 +53,13 @@ public class PlayerController : MonoBehaviour
 
     public void OnMouseUnlock(InputAction.CallbackContext context){
         if(context.started){
-            Debug.Log("Started");
             mouseUnlock = true;
             Cursor.lockState = CursorLockMode.Confined;
             Cursor.visible = true;
         }
         if(context.canceled){
-            Debug.Log("Released");
             mouseUnlock = false;
-            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.lockState = CursorLockMode.Confined;
             Cursor.visible = false;
             DisableAllOutlinesAndHideMenu();
         }
@@ -151,15 +147,15 @@ public class PlayerController : MonoBehaviour
         holdingItem[handId].transform.localRotation = previousRotation;
     }
 
-    public void OnInteract(InputAction.CallbackContext context){
-        if(context.phase == InputActionPhase.Performed){
-            if(underWiewItem == null){Debug.Log("Nothing to interact with"); return;}
-            InteractableObjects item = underWiewItem.GetComponent<InteractableObjects>();
-            if((item.GetCanBeInteracted(0) || item.GetCanBeInteracted(1))  && (item is RecipeCanvas || item is Mirror || item is Placard)){
-                item.Interact(0);
-            } 
-        }
-    }
+    // public void OnInteract(InputAction.CallbackContext context){
+    //     if(context.phase == InputActionPhase.Performed){
+    //         if(underWiewItem == null) return;
+    //         InteractableObjects item = underWiewItem.GetComponent<InteractableObjects>();
+    //         if((item.GetCanBeInteracted(0) || item.GetCanBeInteracted(1))  && (item is Mirror || item is Placard)){
+    //             item.Interact(0);
+    //         } 
+    //     }
+    // }
 
     public void DestroyHoldingItem(int handId){
         Destroy(holdingItem[handId]);

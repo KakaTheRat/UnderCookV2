@@ -22,7 +22,7 @@ public class RecipeManager : MonoBehaviour
         while(!jsonManager.done){
             await Task.Delay(100);
         }
-        FindAnyObjectByType<RecipeCanvas>().Interact(0);
+        FindAnyObjectByType<RecipeCanvas>().UpdateCanvas();
     }
 
     public Recipe SelectRandomRecipe(){

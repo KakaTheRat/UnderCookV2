@@ -10,6 +10,7 @@ public class InterractionCanvas : MonoBehaviour
     [SerializeField] TMP_Text interractionText;
     [SerializeField] Button leftHandButton;
     [SerializeField] Button rightHandButton;
+    [SerializeField] Button openButton;
 
     void Awake(){
         gameObject.SetActive(false);
@@ -24,6 +25,8 @@ public class InterractionCanvas : MonoBehaviour
         if(interactableObject is Food or Plate) endPos.y += 1f;
         else if(interactableObject is Knife or Pot) endPos.y += 1.2f;
         else if(interactableObject is Bin) endPos.y += 2.3f;
+        else if(interactableObject is Placard) endPos.y += 2.6f;
+        if(interactableObject is Placard && ((Placard)interactableObject).GetName() == "Fridge") endPos.z += 3.0f;
         gameObject.transform.position = endPos;
     }
 
@@ -45,6 +48,10 @@ public class InterractionCanvas : MonoBehaviour
 
     public void SetMenuActive(bool _active){
         gameObject.SetActive(_active);
+    }
+
+    public Button GetOpenButton(){
+        return openButton;
     }
 
     public void SetButonInteractable(List<bool> _interactable){
